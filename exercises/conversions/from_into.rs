@@ -7,6 +7,8 @@
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a
 // hint.
 
+use std::{os::windows::raw::SOCKET, vec};
+
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -40,10 +42,16 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let vec:Vec<&str> = s.split(",").collect();
+        if vec.len() != 2 || vec[0].is_empty() { return Person::default(); }
+
+        let name = vec[0].to_string();
+        match vec[1].parse::<usize>() {
+            Ok(age) => Person { name, age },
+            Err(_) => Person::default()
+        }
     }
 }
 
