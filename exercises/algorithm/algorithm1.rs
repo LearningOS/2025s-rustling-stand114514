@@ -2,10 +2,9 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
-use std::ptr::NonNull;
+use std::ptr::{self, NonNull};
 use std::vec::*;
 
 #[derive(Debug)]
@@ -69,14 +68,45 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+	fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self 
+    where 
+        T: std::cmp::PartialOrd,
+    {
+        let mut merge = LinkedList::new();
+
+        let mut add_node = |node: NonNull<Node<T>>| {
+            let next = unsafe { (*node.as_ptr()).next.take() };
+
+            match merge.end {
+                None => merge.start = Some(node),
+                Some(end) => unsafe { (*end.as_ptr()).next = Some(node) }
+            }
+
+            merge.end = Some(node);
+            merge.length += 1;
+            next
+        };
+
+        let mut a_ptr = list_a.start;
+        let mut b_ptr = list_b.start;
+
+        while let (Some(a), Some(b)) = (a_ptr, b_ptr) {
+            if unsafe { (*a.as_ptr()).val <= (*b.as_ptr()).val } {
+                a_ptr = add_node(a)
+            }else{
+                b_ptr = add_node(b)
+            }
         }
+
+        while let Some(ptr) = a_ptr {
+            a_ptr = add_node(ptr)
+        }
+
+        while let Some(ptr) = b_ptr {
+            b_ptr = add_node(ptr)
+        }
+
+        merge
 	}
 }
 
