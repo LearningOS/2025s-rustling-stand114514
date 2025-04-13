@@ -44,16 +44,21 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
-        if s.is_empty(){
-            return Default::default();
+        if s.len()==0{
+            return Person::default();
         }
-        match s.split_once(","){
-            Some((name,_))if name.is_empty()=>Default::default(),
-            Some((name,age_str))=>match age_str.parse::<usize>(){
-                Ok(age)=>Person{name:name.to_string(),age,},
-                Err(_)=>Default::default(),
-            }
-            None=>Default::default(),
+        let c:Vec<&str>=s.split(",").collect();
+        if c.len()!=2 || c[0].len()==0{
+            return Person::default();
+        }
+
+        let a=c[1].parse::<usize>();
+        match a{
+            Ok(age) => return Person{
+                name:c[0].to_string(),
+                age
+            },
+            Err(_) => return Person::default(),
         }
     }
 }
