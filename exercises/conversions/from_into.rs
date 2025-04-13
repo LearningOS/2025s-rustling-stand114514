@@ -7,8 +7,6 @@
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a
 // hint.
 
-use std::{os::windows::raw::SOCKET, vec};
-
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -32,7 +30,7 @@ impl Default for Person {
 // outcome of this needs to be handled appropriately.
 //
 // Steps:
-// 1. If the length of the provided string is 0, then return the default of
+// 1. If the length of the provided strin()g is 0, then return the default of
 //    Person.
 // 2. Split the given string on the commas present in it.
 // 3. Extract the first element from the split operation and use it as the name.
