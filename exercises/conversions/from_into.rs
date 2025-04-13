@@ -45,12 +45,12 @@ impl Default for Person {
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
         let vec:Vec<&str> = s.split(",").collect();
-        if vec.len() != 2 || vec[0].is_empty() { return Person::default(); }
+        if vec.len() != 2 || vec[0].is_empty() { return Default::default(); }
 
         let name = vec[0].to_string();
         match vec[1].parse::<usize>() {
             Ok(age) => Person { name, age },
-            Err(_) => Person::default()
+            Err(_) => Default::default()
         }
     }
 }
