@@ -6,7 +6,7 @@
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
-use predicates::ord::le;
+// use predicates::ord::le;
 
 
 #[derive(Debug)]
@@ -51,7 +51,7 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        match self.root {
+        match &mut self.root {
             Some(root) => root.insert(value),
             None => self.root = Some(Box::new(TreeNode::new(value)))
         }
@@ -59,7 +59,7 @@ where
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        
+        self.root.as_ref().map_or(false, |root| root.search(value))
     }
 }
 
@@ -67,9 +67,33 @@ impl<T> TreeNode<T>
 where
     T: Ord,
 {
+    fn search(&self, value: T) -> bool {
+        match value.cmp(&self.value) {
+            Ordering::Equal => true,
+            Ordering::Less => self.left.as_ref().map_or(false, |left| left.search(value)),
+            Ordering::Greater => self.right.as_ref().map_or(false, |left| left.search(value))
+        }
+    }
+
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        match value.cmp(&self.value) {
+            Ordering::Equal => {},
+            Ordering::Less => {
+                if let Some(ref mut left) = self.left {
+                    left.insert(value);
+                }else{
+                    self.left = Some(Box::new(TreeNode::new(value)));
+                }
+            },
+            Ordering::Greater => {
+                if let Some(ref mut right) = self.right {
+                    right.insert(value);
+                }else{
+                    self.right = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+        }
     }
 }
 
